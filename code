@@ -1,0 +1,188 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ * Representa a un estudiante con su nombre, curso y nota.
+ */
+class Estudiante {
+    private String nombre;
+    private String curso;
+    private double nota;
+
+    public Estudiante(String nombre, String curso, double nota) {
+        this.nombre = nombre;
+        this.curso = curso;
+        this.nota = nota;
+    }
+
+    public String getNombre() { return nombre; }
+    public String getCurso()  { return curso; }
+    public double getNota()   { return nota; }
+}
+
+/**
+ * Sistema Centro de Apoyo Academico.
+ * Permite consultar estudiantes, verificar pertenencia a cursos y usar una calculadora.
+ */
+public class CentroApoyo {
+
+    static List<Estudiante> estudiantes = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        cargarEstudiantes();
+        menu();
+    }
+
+    static void cargarEstudiantes() {
+        estudiantes.add(new Estudiante("ana",       "prolog",     6.5));
+        estudiantes.add(new Estudiante("luis",      "prolog",     3.8));
+        estudiantes.add(new Estudiante("maria",     "prolog",     5.2));
+        estudiantes.add(new Estudiante("pedro",     "prolog",     4.0));
+        estudiantes.add(new Estudiante("sofia",     "prolog",     2.9));
+        estudiantes.add(new Estudiante("carlos",    "java",       5.8));
+        estudiantes.add(new Estudiante("valentina", "java",       4.5));
+        estudiantes.add(new Estudiante("diego",     "java",       3.5));
+        estudiantes.add(new Estudiante("camila",    "java",       6.0));
+        estudiantes.add(new Estudiante("tomas",     "java",       1.0));
+        estudiantes.add(new Estudiante("fernanda",  "python",     5.5));
+        estudiantes.add(new Estudiante("nicolas",   "python",     3.9));
+        estudiantes.add(new Estudiante("isadora",   "python",     6.8));
+        estudiantes.add(new Estudiante("matias",    "python",     4.2));
+        estudiantes.add(new Estudiante("renata",    "python",     2.5));
+        estudiantes.add(new Estudiante("ignacio",   "redes",      4.7));
+        estudiantes.add(new Estudiante("javiera",   "redes",      3.0));
+        estudiantes.add(new Estudiante("rodrigo",   "redes",      5.0));
+        estudiantes.add(new Estudiante("constanza", "redes",      3.2));
+        estudiantes.add(new Estudiante("andres",    "redes",      6.1));
+        estudiantes.add(new Estudiante("daniela",   "matematica", 4.8));
+        estudiantes.add(new Estudiante("felipe",    "matematica", 3.6));
+        estudiantes.add(new Estudiante("catalina",  "matematica", 5.3));
+        estudiantes.add(new Estudiante("esteban",   "matematica", 2.0));
+        estudiantes.add(new Estudiante("paola",     "matematica", 6.2));
+        estudiantes.add(new Estudiante("gonzalo",   "prolog",     4.1));
+        estudiantes.add(new Estudiante("barbara",   "java",       3.7));
+        estudiantes.add(new Estudiante("hector",    "python",     5.9));
+        estudiantes.add(new Estudiante("lorena",    "redes",      4.3));
+        estudiantes.add(new Estudiante("victor",    "matematica", 1.5));
+    }
+
+    /**
+     Verifica si un estudiante pertenece al curso indicado.
+     */
+    static boolean perteneceACurso(String nombre, String curso) {
+        return estudiantes.stream()
+            .filter(e -> e.getNombre().equalsIgnoreCase(nombre) &&
+                         e.getCurso().equalsIgnoreCase(curso))
+            .anyMatch(e -> true);
+    }
+
+    /**
+     * Retorna true si el estudiante tiene nota mayor o igual a 4.0.
+     */
+    static boolean estaAprobado(String nombre) {
+        return estudiantes.stream()
+            .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
+            .anyMatch(e -> e.getNota() >= 4.0);
+    }
+
+    /**
+     * Retorna true si el estudiante tiene nota menor a 4.0.
+     */
+    static boolean estaReprobado(String nombre) {
+        return estudiantes.stream()
+            .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
+            .anyMatch(e -> e.getNota() < 4.0);
+    }
+
+    /**
+     * Lee el nombre de un estudiante por consola, lo busca con Stream
+     * y muestra su nota junto con su estado (Aprobado o Reprobado).
+     */
+    static void mostrarEstadoEstudiante() {
+        System.out.print("Ingrese el nombre del estudiante: ");
+        String nombre = sc.nextLine();
+
+        // Busca el estudiante con Stream y muestra su informacion si existe
+        boolean encontrado = estudiantes.stream()
+            .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
+            .findFirst()
+            .map(e -> {
+                String estado = e.getNota() >= 4.0 ? "Aprobado" : "Reprobado";
+                System.out.println("Nota: " + e.getNota() + " - Estado: " + estado);
+                return true;
+            })
+            .orElse(false);
+
+        if (!encontrado) {
+            System.out.println("Estudiante no encontrado.");
+        }
+    }
+
+    /**
+     * Solicita dos numeros y una operacion basica, luego muestra el resultado.
+     */
+    static void calculadora() {
+        System.out.print("Ingrese el primer numero: ");
+        double a = Double.parseDouble(sc.nextLine());
+        System.out.print("Ingrese el segundo numero: ");
+        double b = Double.parseDouble(sc.nextLine());
+        System.out.print("Ingrese la operacion (+, -, *, /): ");
+        String op = sc.nextLine().trim();
+
+        switch (op) {
+            case "+": System.out.println("Resultado: " + (a + b)); break;
+            case "-": System.out.println("Resultado: " + (a - b)); break;
+            case "*": System.out.println("Resultado: " + (a * b)); break;
+            case "/":
+                if (b != 0)
+                    System.out.println("Resultado: " + (a / b));
+                else
+                    System.out.println("Error: division por cero.");
+                break;
+            default:
+                System.out.println("Operacion no reconocida.");
+        }
+    }
+
+    /**
+     * Muestra el menu principal y repite hasta que el usuario elija salir.
+     */
+    static void menu() {
+        int opcion;
+        do {
+            System.out.println("\n=== Centro de Apoyo Academico ===");
+            System.out.println("1. Consultar estado de un estudiante");
+            System.out.println("2. Verificar si pertenece a un curso");
+            System.out.println("3. Calculadora");
+            System.out.println("4. Salir");
+            System.out.print("Seleccione una opcion: ");
+            opcion = Integer.parseInt(sc.nextLine());
+
+            switch (opcion) {
+                case 1:
+                    mostrarEstadoEstudiante();
+                    break;
+                case 2:
+                    System.out.print("Nombre del estudiante: ");
+                    String nombre = sc.nextLine();
+                    System.out.print("Nombre del curso: ");
+                    String curso = sc.nextLine();
+                    if (perteneceACurso(nombre, curso))
+                        System.out.println(nombre + " pertenece al curso " + curso + ".");
+                    else
+                        System.out.println(nombre + " no pertenece al curso " + curso + ".");
+                    break;
+                case 3:
+                    calculadora();
+                    break;
+                case 4:
+                    System.out.println("Hasta luego.");
+                    break;
+                default:
+                    System.out.println("Opcion invalida.");
+            }
+        } while (opcion != 4);
+    }
+}
